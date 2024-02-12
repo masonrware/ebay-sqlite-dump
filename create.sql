@@ -20,8 +20,8 @@ CREATE TABLE Items (
     Buy_Price REAL,
     First_Bid REAL,
     Number_of_Bids INT,
-    Started VARCHAR(255),
-    Ends VARCHAR(255),
+    Started CHAR(255),
+    Ends CHAR(255),
     SellerID VARCHAR(255),
     Description VARCHAR(255),
 );
