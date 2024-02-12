@@ -1,4 +1,4 @@
 %%sql
 SELECT COUNT(*) 
-FROM Auctions
+FROM Bids
 WHERE (LENGTH(CategoryColumn) - LENGTH(REPLACE(CategoryColumn, ',', '')) + 1) = 4;
