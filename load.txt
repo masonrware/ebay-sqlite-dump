@@ -1,0 +1,5 @@
+.separator |
+.import items.dat Items
+update Items set ... -- Replace all token ‘NULL‘ values with null
+.import auctionuser.dat Users
+...
