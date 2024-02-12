@@ -6,11 +6,12 @@ Modified: 02/12/2024
 """
 
 import sys
+import time
 from json import loads
 from re import sub
 
-columnSeparator = "|"
-nullIndicator = "NULL"
+COLUMN_SEPARATOR = "|"
+NULL_INDICATOR = "NULL"
 
 items = list()
 bids = list()
@@ -82,19 +83,103 @@ def parseJson(json_file):
         ]  # creates a Python dictionary of Items for the supplied json file
         for item in temp_items:
             # create entry in items array
-            items.append([item["ItemID"],
-                          item["Name"],
-                          item["Category"],
-                          item["Currently"],
-                          item["Category"],
-                          transformDollar(item["Buy_Price"]) if item["Buy_Price"] else nullIndicator],
-                          transformDollar(item["First_Bid"]),
-                          item["Number_of_Bids"],
-                          transformDttm(item["Started"]),
-                          transformDttm(item["Ends"]),
-                          
-                          )
-    
+            items.append(
+                [
+                    item["ItemID"],
+                    item["Name"],
+                    item["Category"],
+                    item["Currently"],
+                    item["Category"],
+                    (
+                        transformDollar(item["Buy_Price"])
+                        if "Buy_Price" in item
+                        else NULL_INDICATOR
+                    ),
+                    transformDollar(item["First_Bid"]),
+                    item["Number_of_Bids"],
+                    transformDttm(item["Started"]),
+                    transformDttm(item["Ends"]),
+                    item["Seller"]["UserID"],
+                    item["Description"],
+                ]
+            )
+
+            # create bids entry
+            if item["Bids"]:
+                for bid in item["Bids"]:
+                    bids.append(
+                        [
+                            item["ItemID"],
+                            bid["Bid"]["Bidder"]["UserID"],
+                            transformDttm(bid["Bid"]["Time"]),
+                            transformDollar(bid["Bid"]["Amount"]),
+                        ]
+                    )
+
+            # create a user entry
+            users.append(
+                [
+                    item["Seller"]["UserID"],
+                    item["Location"],
+                    item["Country"],
+                    item["Seller"]["Rating"],
+                ]
+            )
+            # create user entries for each bidder -- we do not care about redundancy at this step
+            if item["Bids"]:
+                for bid in item["Bids"]:
+                    users.append(
+                        [
+                            bid["Bid"]["Bidder"]["UserID"],
+                            (
+                                bid["Bid"]["Bidder"]["Location"]
+                                if "Location" in bid["Bid"]["Bidder"]
+                                else NULL_INDICATOR
+                            ),
+                            (
+                                bid["Bid"]["Bidder"]["Country"]
+                                if "Country" in bid["Bid"]["Bidder"]
+                                else NULL_INDICATOR
+                            ),
+                            bid["Bid"]["Bidder"]["Rating"],
+                        ]
+                    )
+
+        count = 0
+
+        # write items.dat
+        with open("./output/items.dat", "a+") as file:
+            for item in items:
+                for ele in item:
+                    if count != len(item) - 1:
+                        file.write(f"{ele}{COLUMN_SEPARATOR}")
+                        count += 1
+                    else:
+                        file.write(f"{ele}\n")
+                        count = 0
+
+        # write users.dat
+        with open("./output/users.dat", "a+") as file:
+            for user in users:
+                for ele in user:
+                    if count != len(item) - 1:
+                        file.write(f"{ele}{COLUMN_SEPARATOR}")
+                        count += 1
+                    else:
+                        file.write(f"{ele}\n")
+                        count = 0
+
+        # write bids.dat
+        with open("./output/bids.dat", "a+") as file:
+            for bid in bids:
+                for ele in bid:
+                    if count != len(item) - 1:
+                        file.write(f"{ele}{COLUMN_SEPARATOR}")
+                        count += 1
+                    else:
+                        file.write(f"{ele}\n")
+                        count = 0
+
 
 def main(argv):
     """
@@ -107,12 +192,26 @@ def main(argv):
             file=sys.stderr,
         )
         sys.exit(1)
+    total_start_time = time.time()
     # loops over all .json files in the argument
     for f in argv[1:]:
         if isJson(f):
+            start_time = time.time()
             parseJson(f)
-            print("Success parsing " + f)
+            end_time = time.time()
+
+            running_time = end_time - start_time
+
+            print(f"Parsed File: \t\t{f}\nExecution Time: \t{running_time}s\n")
+
+    total_end_time = time.time()
+    total_running_time = total_end_time - total_start_time
+
+    print(
+        f"=================================================\nSuccessfully Finished Parsing!\nExecution Time: \t{total_running_time}s\n"
+    )
 
 
 if __name__ == "__main__":
     main(sys.argv)
+
