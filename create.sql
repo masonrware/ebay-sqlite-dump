@@ -6,8 +6,8 @@ DROP TABLE IF EXISTS Users;
 -- Create Users table
 CREATE TABLE Users (
     UserID INT PRIMARY KEY DISTINCT,
-    Country CHAR(255),
     Location VARCHAR(255),
+    Country CHAR(255),
     Rating INT
 );
 
