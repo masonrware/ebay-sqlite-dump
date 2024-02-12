@@ -13,7 +13,7 @@ CREATE TABLE Users (
 
 -- Create Items table
 CREATE TABLE Items (
-    ItemID INT PRIMARY KEY,
+    ItemID INT PRIMARY KEY DISTINCT,
     Name VARCHAR(255),
     Category TEXT,
     Currently REAL,
@@ -23,6 +23,7 @@ CREATE TABLE Items (
     Started CHAR(255),
     Ends CHAR(255),
     SellerID VARCHAR(255),
+    FOREIGN KEY (SellerID) REFERENCES Users(UserID)
     Description VARCHAR(255),
 );
 
