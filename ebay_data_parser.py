@@ -148,7 +148,7 @@ def parseJson(json_file):
         count = 0
 
         # write items.dat
-        with open("./output/items.dat", "a+") as file:
+        with open("./items.dat", "a+") as file:
             for item in items:
                 for ele in item:
                     if count != len(item) - 1:
@@ -159,7 +159,7 @@ def parseJson(json_file):
                         count = 0
 
         # write users.dat
-        with open("./output/users.dat", "a+") as file:
+        with open("./users.dat", "a+") as file:
             for user in users:
                 for ele in user:
                     if count != len(item) - 1:
@@ -170,7 +170,7 @@ def parseJson(json_file):
                         count = 0
 
         # write bids.dat
-        with open("./output/bids.dat", "a+") as file:
+        with open("./bids.dat", "a+") as file:
             for bid in bids:
                 for ele in bid:
                     if count != len(item) - 1:
