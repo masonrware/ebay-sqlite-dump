@@ -89,7 +89,6 @@ def parseJson(json_file):
                     item["Name"],
                     item["Category"],
                     item["Currently"],
-                    item["Category"],
                     (
                         transformDollar(item["Buy_Price"])
                         if "Buy_Price" in item
