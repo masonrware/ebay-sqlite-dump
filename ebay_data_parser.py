@@ -16,6 +16,7 @@ NULL_INDICATOR = "NULL"
 items = list()
 bids = list()
 users = list()
+categories = list()
 
 # Dictionary of months used for date transformation
 MONTHS = {
@@ -87,7 +88,6 @@ def parseJson(json_file):
                 [
                     item["ItemID"],
                     item["Name"],
-                    item["Category"],
                     item["Currently"],
                     (
                         transformDollar(item["Buy_Price"])
@@ -144,6 +144,13 @@ def parseJson(json_file):
                         ]
                     )
 
+            # create category entries
+            for category in item["Category"]: 
+                categories.append([
+                    item["ItemID"],
+                    category
+                ])
+                
         count = 0
 
         # write items.dat
@@ -172,6 +179,17 @@ def parseJson(json_file):
         with open("./bids.dat", "a+") as file:
             for bid in bids:
                 for ele in bid:
+                    if count != len(item) - 1:
+                        file.write(f"{ele}{COLUMN_SEPARATOR}")
+                        count += 1
+                    else:
+                        file.write(f"{ele}\n")
+                        count = 0
+                        
+        # write categories.dat
+        with open("./categories.dat", "a+") as file:
+            for category in categories:
+                for ele in category:
                     if count != len(item) - 1:
                         file.write(f"{ele}{COLUMN_SEPARATOR}")
                         count += 1
