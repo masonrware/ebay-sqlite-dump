@@ -150,11 +150,11 @@ def parseJson(json_file):
                     item["ItemID"],
                     category
                 ])
-                
+        
         count = 0
 
         # write items.dat
-        with open("./items.dat", "a+") as file:
+        with open("./items.dat", "w") as file:
             for item in items:
                 for ele in item:
                     if count != len(item) - 1:
@@ -165,10 +165,10 @@ def parseJson(json_file):
                         count = 0
 
         # write users.dat
-        with open("./users.dat", "a+") as file:
+        with open("./users.dat", "w") as file:
             for user in users:
                 for ele in user:
-                    if count != len(item) - 1:
+                    if count != len(user) - 1:
                         file.write(f"{ele}{COLUMN_SEPARATOR}")
                         count += 1
                     else:
@@ -176,10 +176,10 @@ def parseJson(json_file):
                         count = 0
 
         # write bids.dat
-        with open("./bids.dat", "a+") as file:
+        with open("./bids.dat", "w") as file:
             for bid in bids:
                 for ele in bid:
-                    if count != len(item) - 1:
+                    if count != len(bid) - 1:
                         file.write(f"{ele}{COLUMN_SEPARATOR}")
                         count += 1
                     else:
@@ -187,10 +187,11 @@ def parseJson(json_file):
                         count = 0
                         
         # write categories.dat
-        with open("./categories.dat", "a+") as file:
+        with open("./categories.dat", "w") as file:
             for category in categories:
+                print(category)
                 for ele in category:
-                    if count != len(item) - 1:
+                    if count != len(category) - 1:
                         file.write(f"{ele}{COLUMN_SEPARATOR}")
                         count += 1
                     else:
