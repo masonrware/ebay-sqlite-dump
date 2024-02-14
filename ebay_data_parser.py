@@ -11,11 +11,12 @@ from json import loads
 from re import sub
 
 COLUMN_SEPARATOR = "|"
-NULL_INDICATOR = "NULL"
+NULL_INDICATOR = "\'NULL\'"
 
 items = list()
 bids = list()
 users = list()
+categories = list()
 
 # Dictionary of months used for date transformation
 MONTHS = {
@@ -87,9 +88,7 @@ def parseJson(json_file):
                 [
                     item["ItemID"],
                     item["Name"],
-                    item["Category"],
                     item["Currently"],
-                    item["Category"],
                     (
                         transformDollar(item["Buy_Price"])
                         if "Buy_Price" in item
@@ -145,10 +144,17 @@ def parseJson(json_file):
                         ]
                     )
 
+            # create category entries
+            for category in item["Category"]: 
+                categories.append([
+                    item["ItemID"],
+                    category
+                ])
+        
         count = 0
 
         # write items.dat
-        with open("./output/items.dat", "a+") as file:
+        with open("./items.dat", "w") as file:
             for item in items:
                 for ele in item:
                     if count != len(item) - 1:
@@ -159,10 +165,10 @@ def parseJson(json_file):
                         count = 0
 
         # write users.dat
-        with open("./output/users.dat", "a+") as file:
+        with open("./users.dat", "w") as file:
             for user in users:
                 for ele in user:
-                    if count != len(item) - 1:
+                    if count != len(user) - 1:
                         file.write(f"{ele}{COLUMN_SEPARATOR}")
                         count += 1
                     else:
@@ -170,10 +176,22 @@ def parseJson(json_file):
                         count = 0
 
         # write bids.dat
-        with open("./output/bids.dat", "a+") as file:
+        with open("./bids.dat", "w") as file:
             for bid in bids:
                 for ele in bid:
-                    if count != len(item) - 1:
+                    if count != len(bid) - 1:
+                        file.write(f"{ele}{COLUMN_SEPARATOR}")
+                        count += 1
+                    else:
+                        file.write(f"{ele}\n")
+                        count = 0
+                        
+        # write categories.dat
+        with open("./categories.dat", "w") as file:
+            for category in categories:
+                print(category)
+                for ele in category:
+                    if count != len(category) - 1:
                         file.write(f"{ele}{COLUMN_SEPARATOR}")
                         count += 1
                     else:
