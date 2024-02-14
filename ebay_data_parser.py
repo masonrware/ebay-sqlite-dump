@@ -11,7 +11,7 @@ from json import loads
 from re import sub
 
 COLUMN_SEPARATOR = "|"
-NULL_INDICATOR = "NULL"
+NULL_INDICATOR = "\'NULL\'"
 
 items = list()
 bids = list()
