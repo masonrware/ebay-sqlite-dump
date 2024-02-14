@@ -16,7 +16,6 @@ CREATE TABLE Users (
 CREATE TABLE Items (
     ItemID INT PRIMARY KEY DISTINCT,
     Name TEXT,
-    Category TEXT,
     Currently REAL CHECK (Currently >0),
     Buy_Price REAL CHECK (Buy_Price >0),
     First_Bid REAL CHECK (First_Bid >0),
