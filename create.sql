@@ -24,8 +24,8 @@ CREATE TABLE Items (
     Started TEXT,
     Ends TEXT,
     SellerID TEXT,
-    FOREIGN KEY (SellerID) REFERENCES Users(UserID)
-    Description TEXT,
+    FOREIGN KEY (SellerID) REFERENCES Users(UserID),
+    Description TEXT
 );
 
 -- Create Bids table
@@ -36,11 +36,11 @@ CREATE TABLE Bids (
     PRIMARY KEY (ItemID, UserID, Time),
     Amount REAL,
     FOREIGN KEY (ItemID) REFERENCES Items(ItemID),
-    FOREIGN KEY (UserID) REFERENCES Users(UserID),
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
 
 CREATE TABLE Categories(
-    ItemID INT,
-    Category TEXT,
-    FOREIGN KEY(ItemID) REFERENCES Items(ItemID),
+    PRIMARY KEY ItemID INT,
+    PRIMARY KEY Category TEXT,
+    FOREIGN KEY(ItemID) REFERENCES Items(ItemID)
 );
