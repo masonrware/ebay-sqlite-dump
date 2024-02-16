@@ -87,7 +87,7 @@ def parseJson(json_file):
             items.append(
                 [
                     item["ItemID"],
-                    item["Name"],
+                    "\"{body}\"".format(body=item["Name"].replace('"', '""')),
                     item["Currently"],
                     (
                         transformDollar(item["Buy_Price"])
@@ -96,10 +96,10 @@ def parseJson(json_file):
                     ),
                     transformDollar(item["First_Bid"]),
                     item["Number_of_Bids"],
-                    transformDttm(item["Started"]),
-                    transformDttm(item["Ends"]),
-                    item["Seller"]["UserID"],
-                    item["Description"],
+                    "\"{body}\"".format(body=transformDttm(item["Started"].replace('"', '""'))),
+                    "\"{body}\"".format(body=transformDttm(item["Ends"].replace('"', '""'))),
+                    "\"{body}\"".format(body=item["Seller"]["UserID"].replace('"', '""')),
+                    "\"{body}\"".format(body=str(item["Description"]).replace('"', '""')),
                 ]
             )
 
@@ -109,8 +109,8 @@ def parseJson(json_file):
                     bids.append(
                         [
                             item["ItemID"],
-                            bid["Bid"]["Bidder"]["UserID"],
-                            transformDttm(bid["Bid"]["Time"]),
+                            "\"{body}\"".format(body=bid["Bid"]["Bidder"]["UserID"].replace('"', '""')),
+                            "\"{body}\"".format(body=transformDttm(bid["Bid"]["Time"].replace('"', '""'))),
                             transformDollar(bid["Bid"]["Amount"]),
                         ]
                     )
@@ -118,9 +118,9 @@ def parseJson(json_file):
             # create a user entry
             users.append(
                 [
-                    item["Seller"]["UserID"],
-                    item["Location"],
-                    item["Country"],
+                    "\"{body}\"".format(body=item["Seller"]["UserID"].replace('"', '""')),
+                    "\"{body}\"".format(body=item["Location"].replace('"', '""')),
+                    "\"{body}\"".format(body=item["Country"].replace('"', '""')),
                     item["Seller"]["Rating"],
                 ]
             )
@@ -129,14 +129,14 @@ def parseJson(json_file):
                 for bid in item["Bids"]:
                     users.append(
                         [
-                            bid["Bid"]["Bidder"]["UserID"],
+                            "\"{body}\"".format(body=bid["Bid"]["Bidder"]["UserID"].replace('"', '""')),
                             (
-                                bid["Bid"]["Bidder"]["Location"]
+                                "\"{body}\"".format(body=bid["Bid"]["Bidder"]["Location"].replace('"', '""'))
                                 if "Location" in bid["Bid"]["Bidder"]
                                 else NULL_INDICATOR
                             ),
                             (
-                                bid["Bid"]["Bidder"]["Country"]
+                                "\"{body}\"".format(body=bid["Bid"]["Bidder"]["Country"].replace('"', '""'))
                                 if "Country" in bid["Bid"]["Bidder"]
                                 else NULL_INDICATOR
                             ),
@@ -148,7 +148,7 @@ def parseJson(json_file):
             for category in item["Category"]: 
                 categories.append([
                     item["ItemID"],
-                    category
+                    "\"{body}\"".format(body=category.replace('"', '""'))
                 ])
         
         count = 0
@@ -189,7 +189,6 @@ def parseJson(json_file):
         # write categories.dat
         with open("./categories.dat", "w") as file:
             for category in categories:
-                print(category)
                 for ele in category:
                     if count != len(category) - 1:
                         file.write(f"{ele}{COLUMN_SEPARATOR}")
