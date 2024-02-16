@@ -1,4 +1,3 @@
-%%sql
 DROP VIEW IF EXISTS sellers;
 CREATE VIEW sellers AS
 SELECT DISTINCT I.sellerid AS ID, I.rating AS Rating
