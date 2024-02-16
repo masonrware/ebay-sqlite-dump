@@ -6,5 +6,3 @@ update Items set Buy_Price = null where Buy_Price = 'NULL';
 update Bids set Location = null where Location = 'NULL';
 update Bids set Country = null where Country = 'NULL';
 .import categories.dat Categories
-update Categories set
-
