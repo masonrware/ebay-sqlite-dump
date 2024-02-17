@@ -1,4 +1,7 @@
-%%sql
-SELECT COUNT(*) 
-FROM Bids
-WHERE (LENGTH(CategoryColumn) - LENGTH(REPLACE(CategoryColumn, ',', '')) + 1) = 4;
+SELECT COUNT(*) AS NumberOfAuctions
+FROM (
+    SELECT ItemID
+    FROM Categories
+    GROUP BY ItemID
+    HAVING COUNT(Category) = 4
+) AS ItemsWithFourCategories;

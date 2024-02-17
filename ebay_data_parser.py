@@ -18,6 +18,9 @@ bids = list()
 users = list()
 categories = list()
 
+registered_usernames = list()
+registered_categories = list()
+
 # Dictionary of months used for date transformation
 MONTHS = {
     "Jan": "01",
@@ -116,40 +119,51 @@ def parseJson(json_file):
                     )
 
             # create a user entry
-            users.append(
-                [
-                    "\"{body}\"".format(body=item["Seller"]["UserID"].replace('"', '""')),
-                    "\"{body}\"".format(body=item["Location"].replace('"', '""')),
-                    "\"{body}\"".format(body=item["Country"].replace('"', '""')),
-                    item["Seller"]["Rating"],
-                ]
-            )
+            if item["Seller"]["UserID"] not in registered_usernames:
+                registered_usernames.append(item["Seller"]["UserID"])
+                
+                users.append(
+                    [
+                        "\"{body}\"".format(body=item["Seller"]["UserID"].replace('"', '""')),
+                        "\"{body}\"".format(body=item["Location"].replace('"', '""')),
+                        "\"{body}\"".format(body=item["Country"].replace('"', '""')),
+                        item["Seller"]["Rating"],
+                    ]
+                )
+                
             # create user entries for each bidder -- we do not care about redundancy at this step
             if item["Bids"]:
                 for bid in item["Bids"]:
-                    users.append(
-                        [
-                            "\"{body}\"".format(body=bid["Bid"]["Bidder"]["UserID"].replace('"', '""')),
-                            (
-                                "\"{body}\"".format(body=bid["Bid"]["Bidder"]["Location"].replace('"', '""'))
-                                if "Location" in bid["Bid"]["Bidder"]
-                                else NULL_INDICATOR
-                            ),
-                            (
-                                "\"{body}\"".format(body=bid["Bid"]["Bidder"]["Country"].replace('"', '""'))
-                                if "Country" in bid["Bid"]["Bidder"]
-                                else NULL_INDICATOR
-                            ),
-                            bid["Bid"]["Bidder"]["Rating"],
-                        ]
-                    )
+                    if item["Seller"]["UserID"] not in registered_usernames:
+                        registered_usernames.append(item["Seller"]["UserID"])
+                        
+                        users.append(
+                            [
+                                "\"{body}\"".format(body=bid["Bid"]["Bidder"]["UserID"].replace('"', '""')),
+                                (
+                                    "\"{body}\"".format(body=bid["Bid"]["Bidder"]["Location"].replace('"', '""'))
+                                    if "Location" in bid["Bid"]["Bidder"]
+                                    else NULL_INDICATOR
+                                ),
+                                (
+                                    "\"{body}\"".format(body=bid["Bid"]["Bidder"]["Country"].replace('"', '""'))
+                                    if "Country" in bid["Bid"]["Bidder"]
+                                    else NULL_INDICATOR
+                                ),
+                                bid["Bid"]["Bidder"]["Rating"],
+                            ]
+                        )
 
+            # TODO implement duplicate checking for categories
             # create category entries
             for category in item["Category"]: 
-                categories.append([
-                    item["ItemID"],
-                    "\"{body}\"".format(body=category.replace('"', '""'))
-                ])
+                if "{a}{b}".format(a=item["ItemID"], b=category) not in registered_categories:
+                    registered_categories.append("{a}{b}".format(a=item["ItemID"], b=category))
+                    
+                    categories.append([
+                        item["ItemID"],
+                        "\"{body}\"".format(body=category.replace('"', '""'))
+                    ])
         
         count = 0
 
