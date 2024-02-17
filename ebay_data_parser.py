@@ -18,8 +18,8 @@ bids = list()
 users = list()
 categories = list()
 
-registered_usernames = list()
-registered_categories = list()
+registered_usernames = dict()
+registered_categories = dict()
 
 # Dictionary of months used for date transformation
 MONTHS = {
@@ -91,7 +91,7 @@ def parseJson(json_file):
                 [
                     item["ItemID"],
                     "\"{body}\"".format(body=item["Name"].replace('"', '""')),
-                    item["Currently"],
+                    transformDollar(item["Currently"]),
                     (
                         transformDollar(item["Buy_Price"])
                         if "Buy_Price" in item
@@ -120,7 +120,7 @@ def parseJson(json_file):
 
             # create a user entry
             if item["Seller"]["UserID"] not in registered_usernames:
-                registered_usernames.append(item["Seller"]["UserID"])
+                registered_usernames[item["Seller"]["UserID"]] = 0
                 
                 users.append(
                     [
@@ -134,8 +134,8 @@ def parseJson(json_file):
             # create user entries for each bidder -- we do not care about redundancy at this step
             if item["Bids"]:
                 for bid in item["Bids"]:
-                    if item["Seller"]["UserID"] not in registered_usernames:
-                        registered_usernames.append(item["Seller"]["UserID"])
+                    if bid["Bid"]["Bidder"]["UserID"] not in registered_usernames:
+                        registered_usernames[bid["Bid"]["Bidder"]["UserID"]] = 1
                         
                         users.append(
                             [
@@ -154,11 +154,10 @@ def parseJson(json_file):
                             ]
                         )
 
-            # TODO implement duplicate checking for categories
             # create category entries
             for category in item["Category"]: 
                 if "{a}{b}".format(a=item["ItemID"], b=category) not in registered_categories:
-                    registered_categories.append("{a}{b}".format(a=item["ItemID"], b=category))
+                    registered_categories["{a}{b}".format(a=item["ItemID"], b=category)] = 1
                     
                     categories.append([
                         item["ItemID"],
