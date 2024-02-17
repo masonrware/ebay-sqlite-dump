@@ -134,8 +134,8 @@ def parseJson(json_file):
             # create user entries for each bidder -- we do not care about redundancy at this step
             if item["Bids"]:
                 for bid in item["Bids"]:
-                    if item["Seller"]["UserID"] not in registered_usernames:
-                        registered_usernames[item["Seller"]["UserID"]] = 1
+                    if bid["Bid"]["Bidder"]["UserID"] not in registered_usernames:
+                        registered_usernames[bid["Bid"]["Bidder"]["UserID"]] = 1
                         
                         users.append(
                             [
@@ -154,7 +154,6 @@ def parseJson(json_file):
                             ]
                         )
 
-            # TODO implement duplicate checking for categories
             # create category entries
             for category in item["Category"]: 
                 if "{a}{b}".format(a=item["ItemID"], b=category) not in registered_categories:
