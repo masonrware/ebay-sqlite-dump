@@ -1,4 +1,3 @@
-%%sql
 SELECT COUNT(*) AS NumberOfAuctions
 FROM (
     SELECT ItemID
