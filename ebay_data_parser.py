@@ -18,8 +18,8 @@ bids = list()
 users = list()
 categories = list()
 
-registered_usernames = list()
-registered_categories = list()
+registered_usernames = dict()
+registered_categories = dict()
 
 # Dictionary of months used for date transformation
 MONTHS = {
@@ -120,7 +120,7 @@ def parseJson(json_file):
 
             # create a user entry
             if item["Seller"]["UserID"] not in registered_usernames:
-                registered_usernames.append(item["Seller"]["UserID"])
+                registered_usernames[item["Seller"]["UserID"]] = 0
                 
                 users.append(
                     [
@@ -135,7 +135,7 @@ def parseJson(json_file):
             if item["Bids"]:
                 for bid in item["Bids"]:
                     if item["Seller"]["UserID"] not in registered_usernames:
-                        registered_usernames.append(item["Seller"]["UserID"])
+                        registered_usernames[item["Seller"]["UserID"]] = 1
                         
                         users.append(
                             [
@@ -158,7 +158,7 @@ def parseJson(json_file):
             # create category entries
             for category in item["Category"]: 
                 if "{a}{b}".format(a=item["ItemID"], b=category) not in registered_categories:
-                    registered_categories.append("{a}{b}".format(a=item["ItemID"], b=category))
+                    registered_categories["{a}{b}".format(a=item["ItemID"], b=category)] = 1
                     
                     categories.append([
                         item["ItemID"],
