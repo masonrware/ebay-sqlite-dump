@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS Categories;
 
 -- Create Users table
 CREATE TABLE Users (
-    UserID TEXT PRIMARY KEY DISTINCT,
+    UserID TEXT PRIMARY KEY,
     Location TEXT,
     Country TEXT,
     Rating INT -- Rating will be NULL if not seller
@@ -14,17 +14,17 @@ CREATE TABLE Users (
 
 -- Create Items table
 CREATE TABLE Items (
-    ItemID INT PRIMARY KEY DISTINCT,
+    ItemID INT PRIMARY KEY,
     Name TEXT,
-    Currently REAL CHECK (Currently >0),
-    Buy_Price REAL CHECK (Buy_Price >0),
-    First_Bid REAL CHECK (First_Bid >0),
+    Currently REAL CHECK (Currently > 0),
+    Buy_Price REAL CHECK (Buy_Price > 0),
+    First_Bid REAL CHECK (First_Bid > 0),
     Number_of_Bids INT,
     Started TEXT,
     Ends TEXT,
     SellerID TEXT,
-    FOREIGN KEY (SellerID) REFERENCES Users(UserID),
-    Description TEXT
+    Description TEXT,
+    FOREIGN KEY (SellerID) REFERENCES Users(UserID)
 );
 
 -- Create Bids table
@@ -32,14 +32,16 @@ CREATE TABLE Bids (
     ItemID INT,
     UserID TEXT,
     Time TEXT,
-    PRIMARY KEY (ItemID, UserID, Time),
     Amount REAL,
+    PRIMARY KEY (ItemID, UserID, Time),
     FOREIGN KEY (ItemID) REFERENCES Items(ItemID),
     FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
 
-CREATE TABLE Categories(
-    PRIMARY KEY ItemID INT,
-    PRIMARY KEY Category TEXT,
-    FOREIGN KEY(ItemID) REFERENCES Items(ItemID)
+-- Create Categories table
+CREATE TABLE Categories (
+    ItemID INT,
+    Category TEXT,
+    PRIMARY KEY (ItemID, Category),
+    FOREIGN KEY (ItemID) REFERENCES Items(ItemID)
 );
