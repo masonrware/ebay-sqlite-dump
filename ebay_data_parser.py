@@ -91,7 +91,7 @@ def parseJson(json_file):
                 [
                     item["ItemID"],
                     "\"{body}\"".format(body=item["Name"].replace('"', '""')),
-                    item["Currently"],
+                    transformDollar(item["Currently"]),
                     (
                         transformDollar(item["Buy_Price"])
                         if "Buy_Price" in item
